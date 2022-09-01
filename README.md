@@ -1,8 +1,6 @@
 # snake_game
 This is a snake game project to help me practice Java/Game Development
 
-IDE USED: Intellij
-
 Updates To Do:
 
 1. Fix/implement restart game
