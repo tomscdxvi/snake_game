@@ -59,6 +59,14 @@ public class GamePanel extends JPanel implements ActionListener
         new GameFrame();
     }
 
+    public void closeCurrentGameWindow(KeyEvent e) {
+        JComponent comp = (JComponent) e.getSource();
+
+        Window window = SwingUtilities.getWindowAncestor(comp);
+
+        window.dispose();
+    }
+
     public void paint(Graphics g) {
         super.paint(g);
         draw(g);
@@ -244,7 +252,9 @@ public class GamePanel extends JPanel implements ActionListener
                 case KeyEvent.VK_R:
                     if(!running) {
                         try {
+                            closeCurrentGameWindow(e);
                             restart();
+
                             System.out.println("Restart");
                         } catch(NullPointerException npe) {
                             System.out.println("NullPointerException Thrown.");
