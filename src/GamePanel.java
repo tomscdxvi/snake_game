@@ -26,8 +26,7 @@ public class GamePanel extends JPanel implements ActionListener
     GamePanel game;
     JButton          restartButton;
 
-    GamePanel()
-    {
+    GamePanel() {
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.BLACK);
@@ -37,36 +36,36 @@ public class GamePanel extends JPanel implements ActionListener
         start();
     }
 
-    public void start()
-    {
+    public void start() {
         newFruit();
         running = true;
         timer   = new Timer(DELAY_TIMER, this);
         timer.start();
     }
 
-    public void pause()
-    {
+    public void pause() {
         GamePanel.gameOn = true;
         timer.stop();
     }
 
-    public void resume()
-    {
+    public void resume() {
         GamePanel.gameOn = false;
         timer.start();
     }
 
-    public void paint(Graphics g)
-    {
+    public void restart() {
+        setVisible(false);
+
+        new GameFrame();
+    }
+
+    public void paint(Graphics g) {
         super.paint(g);
         draw(g);
     }
 
-    public void draw(Graphics g)
-    {
-        if(running)
-        {
+    public void draw(Graphics g) {
+        if(running) {
             for (int i = 0; i < SCREEN_HEIGHT / UNIT_SIZE; i++) {
                 g.drawLine(i * UNIT_SIZE, 0, i * UNIT_SIZE, SCREEN_HEIGHT);
                 g.drawLine(0, i * UNIT_SIZE, SCREEN_WIDTH, i * UNIT_SIZE);
@@ -94,29 +93,23 @@ public class GamePanel extends JPanel implements ActionListener
             g.setFont(new Font("TimesRoman", Font.PLAIN, 35));
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("Score: " + fruitEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: " + fruitEaten)) / 2, g.getFont().getSize());
-        }
-        else
-        {
+        } else {
             gameOver(g);
         }
     }
 
-    public void newFruit()
-    {
+    public void newFruit() {
         fruitX = random.nextInt((int)(SCREEN_WIDTH / UNIT_SIZE)) * UNIT_SIZE;
         fruitY = random.nextInt((int)(SCREEN_HEIGHT / UNIT_SIZE)) * UNIT_SIZE;
     }
 
-    public void move()
-    {
-        for(int i = bodyParts; i > 0; i--)
-        {
+    public void move() {
+        for(int i = bodyParts; i > 0; i--) {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
 
-        switch(direction)
-        {
+        switch(direction) {
             case 'U':
                 y[0] = y[0] - UNIT_SIZE;
                 break;
@@ -132,8 +125,7 @@ public class GamePanel extends JPanel implements ActionListener
         }
     }
 
-    public void checkFruit()
-    {
+    public void checkFruit() {
         if((x[0] == fruitX) && (y[0] == fruitY))
         {
             bodyParts++;
@@ -142,8 +134,7 @@ public class GamePanel extends JPanel implements ActionListener
         }
     }
 
-    public void checkCollisions()
-    {
+    public void checkCollisions() {
         // Checks if head collides with body, if so then end game.
         for(int i = bodyParts; i > 0; i--)
         {
@@ -154,8 +145,7 @@ public class GamePanel extends JPanel implements ActionListener
         }
 
         // Checks if head touches left border, if so then end game.
-        if(x[0] < 0)
-        {
+        if(x[0] < 0) {
             running = false;
         }
 
@@ -183,8 +173,7 @@ public class GamePanel extends JPanel implements ActionListener
         }
     }
 
-    public void gameOver(Graphics g)
-    {
+    public void gameOver(Graphics g) {
         // Score Check
         g.setColor(Color.white);
         g.setFont(new Font("TimesRoman", Font.PLAIN, 35));
@@ -202,12 +191,10 @@ public class GamePanel extends JPanel implements ActionListener
         g.setFont(new Font("TimesRoman", Font.PLAIN, 50));
         FontMetrics metrics3 = getFontMetrics(g.getFont());
         g.drawString("Press R to Restart", (SCREEN_WIDTH - metrics3.stringWidth("Press R to Restart")) / 2, SCREEN_HEIGHT / 3);
-
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         if(running)
         {
             move();
@@ -217,64 +204,51 @@ public class GamePanel extends JPanel implements ActionListener
         repaint();
     }
 
-    public class MyKeyAdapter extends KeyAdapter
-    {
+    public class MyKeyAdapter extends KeyAdapter {
         @Override
-        public void keyPressed(KeyEvent e)
-        {
-            if((e.getKeyCode() == KeyEvent.VK_R) && running == false)
-            {
-                try
-                {
-                    remove(game);
-                    game = new GamePanel();
-                    add(game);
-                    repaint();
-                }
-                catch(NullPointerException npe)
-                {
-                    System.out.println("NullPointerException Thrown.");
-                }
-            }
-
-            switch(e.getKeyCode())
-            {
+        public void keyPressed(KeyEvent e) {
+            switch(e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    if(direction  != 'R')
-                    {
+                    if(direction  != 'R') {
                         direction = 'L';
                     }
                     break;
 
                 case KeyEvent.VK_RIGHT:
-                    if(direction  != 'L')
-                    {
+                    if(direction  != 'L') {
                         direction = 'R';
                     }
                     break;
 
                 case KeyEvent.VK_UP:
-                    if(direction  != 'D')
-                    {
+                    if(direction  != 'D') {
                         direction = 'U';
                     }
                     break;
 
                 case KeyEvent.VK_DOWN:
-                    if(direction  != 'U')
-                    {
+                    if(direction  != 'U') {
                         direction = 'D';
                     }
                     break;
 
                 case KeyEvent.VK_SPACE:
-                    if(GamePanel.gameOn)
-                    {
+                    if(GamePanel.gameOn) {
                         resume();
                     }
-                    else
-                    {
+                    else {
                         pause();
+                    }
+                    break;
+
+                case KeyEvent.VK_R:
+                    if(!running) {
+                        try {
+                            restart();
+                            System.out.println("Restart");
+                        } catch(NullPointerException npe) {
+                            System.out.println("NullPointerException Thrown.");
+                        }
                     }
                     break;
             }

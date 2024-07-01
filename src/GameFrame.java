@@ -4,8 +4,7 @@ import java.awt.event.ActionListener;
 
 public class GameFrame extends JFrame implements ActionListener
 {
-    GameFrame()
-    {
+    GameFrame() {
         this.add(new GamePanel());
         this.setTitle("2D Snake Game");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -16,8 +15,7 @@ public class GameFrame extends JFrame implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
 
     }
 }
